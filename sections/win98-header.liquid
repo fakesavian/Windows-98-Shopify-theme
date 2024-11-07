@@ -1,0 +1,42 @@
+{% comment %}Windows 98 Style Header{% endcomment %}
+<header class="win98-window win98-header">
+  <div class="win98-title-bar">
+    <span class="win98-title">{{ shop.name }}</span>
+    <div class="win98-window-controls">
+      <button class="win98-window-control" data-action="minimize">_</button>
+      <button class="win98-window-control" data-action="maximize">□</button>
+      <button class="win98-window-control" data-action="close">×</button>
+    </div>
+  </div>
+  
+  <nav class="win98-menu-bar">
+    <ul>
+      <li class="win98-menu-item">
+        <a href="/" class="win98-button">Home</a>
+      </li>
+      <li class="win98-menu-item">
+        <a href="/collections" class="win98-button">Collections</a>
+      </li>
+      <li class="win98-menu-item">
+        <a href="/products" class="win98-button">Products</a>
+      </li>
+      <li class="win98-menu-item">
+        <a href="/cart" class="win98-button">Cart</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+{% schema %}
+{
+  "name": "Windows 98 Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "custom_logo_text",
+      "label": "Custom Logo Text",
+      "default": "Win98 Shop"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,156 @@
+{% comment %}Windows 98 Inspired Order Details Page{% endcomment %}
+{% section 'win98-header' %}
+
+<div class="win98-window win98-order-details-window">
+  <div class="win98-title-bar">
+    <span class="win98-title">Order #{{ order.order_number }}</span>
+    <div class="win98-window-controls">
+      <button class="win98-window-control" data-action="minimize">_</button>
+      <button class="win98-window-control" data-action="maximize">□</button>
+      <button class="win98-window-control" data-action="close">×</button>
+    </div>
+  </div>
+  
+  <div class="win98-order-content">
+    <div class="win98-order-summary">
+      <div class="win98-title-bar">
+        <span class="win98-title">Order Summary</span>
+      </div>
+      
+      <div class="win98-order-details">
+        <div class="win98-order-info">
+          <p><strong>Order Date:</strong> {{ order.created_at | date: "%B %d, %Y" }}</p>
+          <p><strong>Order Status:</strong> {{ order.financial_status_label }}</p>
+          <p><strong>Total:</strong> {{ order.total_price | money }}</p>
+        </div>
+        
+        <div class="win98-shipping-details">
+          <div class="win98-title-bar">
+            <span class="win98-title">Shipping Information</span>
+          </div>
+          
+          <address>
+            {{ order.shipping_address.name }}<br>
+            {{ order.shipping_address.street }}<br>
+            {{ order.shipping_address.city }}, {{ order.shipping_address.province }} {{ order.shipping_address.zip }}<br>
+            {{ order.shipping_address.country }}
+          </address>
+        </div>
+      </div>
+    </div>
+    
+    <div class="win98-order-items">
+      <div class="win98-title-bar">
+        <span class="win98-title">Order Contents</span>
+      </div>
+      
+      <table class="win98-order-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for line_item in order.line_items %}
+            <tr>
+              <td>
+                {% if line_item.image %}
+                  <img src="{{ line_item.image | img_url: 'small' }}" alt="{{ line_item.title }}">
+                {% endif %}
+                {{ line_item.title }}
+                {% if line_item.variant.title != 'Default Title' %}
+                  <span class="win98-variant-details">{{ line_item.variant.title }}</span>
+                {% endif %}
+              </td>
+              <td>{{ line_item.quantity }}</td>
+              <td>{{ line_item.price | money }}</td>
+              <td>{{ line_item.total_price | money }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="win98-order-totals">
+      <div class="win98-title-bar">
+        <span class="win98-title">Order Totals</span>
+      </div>
+      
+      <div class="win98-total-breakdown">
+        <div class="win98-subtotal">
+          <span>Subtotal:</span>
+          <span>{{ order.subtotal_price | money }}</span>
+        </div>
+        
+        {% if order.total_discounts > 0 %}
+          <div class="win98-discount">
+            <span>Discount:</span>
+            <span>-{{ order.total_discounts | money }}</span>
+          </div>
+        {% endif %}
+        
+        <div class="win98-shipping">
+          <span>Shipping:</span>
+          <span>{{ order.total_shipping_price | money }}</span>
+        </div>
+        
+        <div class="win98-tax">
+          <span>Tax:</span>
+          <span>{{ order.total_tax | money }}</span>
+        </div>
+        
+        <div class="win98-total">
+          <strong>Total:</strong>
+          <strong>{{ order.total_price | money }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="win98-order-actions">
+    <button onclick="window.print()" class="win98-button win98-print-order">
+      Print Order
+    </button>
+    <a href="{{ routes.account_url }}" class="win98-button win98-back-to-account">
+      Back to Account
+    </a>
+  </div>
+</div>
+
+{% section 'win98-footer' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const printButton = document.querySelector('.win98-print-order');
+    
+    printButton.addEventListener('click', () => {
+      // Optional: Add print-specific styling
+      const printStyles = `
+        <style>
+          @media print {
+            body * { visibility: hidden; }
+            .win98-order-details-window { visibility: visible; }
+          }
+        </style>
+      `;
+      document.head.insertAdjacentHTML('beforeend', printStyles);
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Windows 98 Order Details Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_order_tracking",
+      "label": "Show Order Tracking",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,76 @@
+{% comment %}Windows 98 Inspired Collections List Page{% endcomment %}
+{% section 'win98-header' %}
+
+<div class="win98-window win98-collections-list-window">
+  <div class="win98-title-bar">
+    <span class="win98-title">Collections Explorer</span>
+    <div class="win98-window-controls">
+      <button class="win98-window-control" data-action="minimize">_</button>
+      <button class="win98-window-control" data-action="maximize">□</button>
+      <button class="win98-window-control" data-action="close">×</button>
+    </div>
+  </div>
+  
+  <div class="win98-collections-content">
+    <div class="win98-collections-grid">
+      {% for collection in collections %}
+        {% if collection.products_count > 0 or settings.show_empty_collections %}
+          <div class="win98-collection-folder" data-collection-handle="{{ collection.handle }}">
+            <img src="{{ 'win98-folder-icon.svg' | asset_url }}" alt="{{ collection.title }} Folder">
+            <div class="win98-folder-details">
+              <span class="win98-folder-name">{{ collection.title }}</span>
+              <span class="win98-folder-count">{{ collection.products_count }} items</span>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% section 'win98-footer' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const collectionFolders = document.querySelectorAll('.win98-collection-folder');
+    
+    collectionFolders.forEach(folder => {
+      folder.addEventListener('dblclick', () => {
+        const collectionHandle = folder.dataset.collectionHandle;
+        window.location.href = `/collections/${collectionHandle}`;
+      });
+      
+      // Add Windows 98 style selection effect
+      folder.addEventListener('click', () => {
+        collectionFolders.forEach(f => f.classList.remove('selected'));
+        folder.classList.add('selected');
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Windows 98 Collections List Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_empty_collections",
+      "label": "Show Empty Collections",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "collections_title",
+      "label": "Page Title",
+      "default": "Collections Explorer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_descriptions",
+      "label": "Show Collection Descriptions",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

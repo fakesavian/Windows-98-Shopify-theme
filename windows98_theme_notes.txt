@@ -1,0 +1,24 @@
+Windows 98 Theme Development Notes
+
+Project Phase: Initial Design & Specification
+
+Key Objectives:
+- Recreate authentic Windows 98 user interface experience
+- Balance nostalgic design with modern e-commerce functionality
+- Ensure theme is modular and easily customizable
+
+Design Inspiration Sources:
+1. Windows 98 OS UI
+2. Retro computing aesthetics
+3. Skeuomorphic design principles
+
+Technical Constraints:
+- Must be compatible with current Shopify theme architecture
+- Responsive across modern devices
+- Performant and lightweight
+
+Next Steps:
+1. Create CSS variables for Windows 98 color scheme
+2. Design reusable component styles
+3. Develop initial prototype of landing page
+4. Test interaction and animation concepts

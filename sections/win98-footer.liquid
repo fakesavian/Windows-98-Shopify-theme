@@ -1,0 +1,65 @@
+{% comment %}Windows 98 Style Footer{% endcomment %}
+<footer class="win98-window win98-footer">
+  <div class="win98-title-bar">
+    <span class="win98-title">System Information</span>
+  </div>
+  
+  <div class="win98-footer-content">
+    <div class="win98-footer-column">
+      <h3 class="win98-section-title">Quick Links</h3>
+      <ul>
+        <li><a href="/pages/about" class="win98-link">About Us</a></li>
+        <li><a href="/pages/contact" class="win98-link">Contact</a></li>
+        <li><a href="/pages/shipping" class="win98-link">Shipping</a></li>
+      </ul>
+    </div>
+    
+    <div class="win98-footer-column">
+      <h3 class="win98-section-title">Customer Service</h3>
+      <ul>
+        <li><a href="/pages/faq" class="win98-link">FAQ</a></li>
+        <li><a href="/pages/returns" class="win98-link">Returns</a></li>
+        <li><a href="/pages/privacy" class="win98-link">Privacy Policy</a></li>
+      </ul>
+    </div>
+    
+    <div class="win98-footer-column">
+      <h3 class="win98-section-title">Connect</h3>
+      <div class="win98-social-icons">
+        {% if settings.social_facebook_link %}
+          <a href="{{ settings.social_facebook_link }}" class="win98-social-icon">FB</a>
+        {% endif %}
+        {% if settings.social_twitter_link %}
+          <a href="{{ settings.social_twitter_link }}" class="win98-social-icon">TW</a>
+        {% endif %}
+        {% if settings.social_instagram_link %}
+          <a href="{{ settings.social_instagram_link }}" class="win98-social-icon">IG</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  
+  <div class="win98-copyright">
+    <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. All Rights Reserved.</p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Windows 98 Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "footer_text",
+      "label": "Footer Text",
+      "default": "Powered by Windows 98 Theme"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_copyright",
+      "label": "Show Copyright",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

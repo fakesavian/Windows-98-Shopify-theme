@@ -1,0 +1,114 @@
+{% comment %}Windows 98 Inspired Product Page{% endcomment %}
+{% section 'win98-header' %}
+
+<div class="win98-window win98-product-window">
+  <div class="win98-title-bar">
+    <span class="win98-title">{{ product.title }}</span>
+    <div class="win98-window-controls">
+      <button class="win98-window-control" data-action="minimize">_</button>
+      <button class="win98-window-control" data-action="maximize">□</button>
+      <button class="win98-window-control" data-action="close">×</button>
+    </div>
+  </div>
+  
+  <div class="win98-product-content">
+    <div class="win98-product-gallery">
+      <div class="win98-main-image">
+        <img src="{{ product.featured_image | img_url: 'large' }}" alt="{{ product.title }}">
+      </div>
+      
+      <div class="win98-image-thumbnails">
+        {% for image in product.images %}
+          <div class="win98-thumbnail" data-image-id="{{ image.id }}">
+            <img src="{{ image | img_url: 'small' }}" alt="{{ image.alt | escape }}">
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="win98-product-details">
+      <div class="win98-product-info-window">
+        <div class="win98-title-bar">
+          <span class="win98-title">Product Properties</span>
+        </div>
+        
+        <div class="win98-product-description">
+          <h1>{{ product.title }}</h1>
+          <p class="win98-price">{{ product.price | money }}</p>
+          
+          <div class="win98-variant-selector">
+            {% form 'product', product, class: 'win98-product-form' %}
+              {% if product.variants.size > 1 %}
+                <div class="win98-select-wrapper">
+                  <label for="variant-select">Select Variant:</label>
+                  <select name="id" id="variant-select" class="win98-select">
+                    {% for variant in product.variants %}
+                      <option value="{{ variant.id }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %}>
+                        {{ variant.title }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
+              
+              <div class="win98-quantity-selector">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" class="win98-input">
+              </div>
+              
+              <button type="submit" name="add" class="win98-button win98-add-to-cart">
+                Add to Cart
+              </button>
+            {% endform %}
+          </div>
+          
+          <div class="win98-product-description-text">
+            <h3>Description</h3>
+            {{ product.description }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% section 'win98-footer' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mainImage = document.querySelector('.win98-main-image img');
+    const thumbnails = document.querySelectorAll('.win98-thumbnail');
+    
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', () => {
+        const imageId = thumbnail.dataset.imageId;
+        const newImageSrc = thumbnail.querySelector('img').src.replace('small', 'large');
+        
+        mainImage.src = newImageSrc;
+        
+        thumbnails.forEach(t => t.classList.remove('selected'));
+        thumbnail.classList.add('selected');
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Windows 98 Product Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show Vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,76 @@
+{% comment %}Windows 98 Inspired Home Page{% endcomment %}
+{% section 'win98-header' %}
+
+<div class="win98-window win98-desktop-window">
+  <div class="win98-title-bar">
+    <span class="win98-title">Welcome to {{ shop.name }}</span>
+  </div>
+  
+  <div class="win98-desktop-content">
+    <div class="win98-parallax-container">
+      <div class="win98-parallax-layer background">
+        <img src="{{ 'win98-desktop-background.jpg' | asset_url }}" alt="Windows 98 Desktop Background">
+      </div>
+      
+      <div class="win98-featured-products">
+        {% for product in collections.featured.products limit: 4 %}
+          <div class="win98-desktop-icon" data-product-id="{{ product.id }}">
+            <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+            <span class="win98-icon-label">{{ product.title }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="win98-welcome-text">
+      <h1>Welcome to the {{ shop.name }} Store</h1>
+      <p>Click on an icon to explore our products!</p>
+    </div>
+  </div>
+</div>
+
+{% section 'win98-footer' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const desktopIcons = document.querySelectorAll('.win98-desktop-icon');
+    
+    desktopIcons.forEach(icon => {
+      icon.addEventListener('dblclick', () => {
+        const productId = icon.dataset.productId;
+        window.location.href = `/products/${productId}`;
+      });
+
+      // Add Windows 98 style selection effect
+      icon.addEventListener('click', () => {
+        desktopIcons.forEach(i => i.classList.remove('selected'));
+        icon.classList.add('selected');
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Windows 98 Home Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "welcome_title",
+      "label": "Welcome Title",
+      "default": "Welcome to the Store"
+    },
+    {
+      "type": "text",
+      "id": "welcome_subtitle",
+      "label": "Welcome Subtitle",
+      "default": "Click on an icon to explore our products!"
+    },
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,124 @@
+{% comment %}Windows 98 Inspired Login Page{% endcomment %}
+{% section 'win98-header' %}
+
+<div class="win98-window win98-login-window">
+  <div class="win98-title-bar">
+    <span class="win98-title">User Login</span>
+    <div class="win98-window-controls">
+      <button class="win98-window-control" data-action="minimize">_</button>
+      <button class="win98-window-control" data-action="maximize">□</button>
+      <button class="win98-window-control" data-action="close">×</button>
+    </div>
+  </div>
+  
+  <div class="win98-login-content">
+    {% form 'customer_login', class: 'win98-login-form' %}
+      {% if form.errors %}
+        <div class="win98-error-window">
+          <div class="win98-title-bar">
+            <span class="win98-title">Error</span>
+          </div>
+          <div class="win98-error-content">
+            {{ form.errors | default_errors }}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="win98-form-group">
+        <label for="CustomerEmail" class="win98-label">Email</label>
+        <input 
+          type="email" 
+          name="customer[email]" 
+          id="CustomerEmail" 
+          class="win98-input" 
+          placeholder="you@example.com"
+          required
+        >
+      </div>
+
+      <div class="win98-form-group">
+        <label for="CustomerPassword" class="win98-label">Password</label>
+        <input 
+          type="password" 
+          name="customer[password]" 
+          id="CustomerPassword" 
+          class="win98-input" 
+          placeholder="Password"
+          required
+        >
+      </div>
+
+      <div class="win98-form-actions">
+        <button type="submit" class="win98-button win98-login-button">
+          Log In
+        </button>
+        
+        <a href="{{ routes.account_register_url }}" class="win98-link">
+          Create Account
+        </a>
+        
+        <a href="{{ routes.account_recover_url }}" class="win98-link">
+          Forgot Password?
+        </a>
+      </div>
+    {% endform %}
+  </div>
+
+  <div class="win98-login-options">
+    {% if shop.enabled_payment_types.size > 0 %}
+      <div class="win98-title-bar">
+        <span class="win98-title">Alternative Login</span>
+      </div>
+      <div class="win98-social-login">
+        {% if shop.enabled_payment_types contains 'google_pay' %}
+          <button class="win98-button win98-social-button google-login">
+            Google Login
+          </button>
+        {% endif %}
+        {% if shop.enabled_payment_types contains 'apple_pay' %}
+          <button class="win98-button win98-social-button apple-login">
+            Apple Login
+          </button>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% section 'win98-footer' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.querySelector('.win98-login-form');
+    
+    loginForm.addEventListener('submit', (e) => {
+      const emailInput = document.getElementById('CustomerEmail');
+      const passwordInput = document.getElementById('CustomerPassword');
+      
+      if (!emailInput.value || !passwordInput.value) {
+        e.preventDefault();
+        alert('Please fill in all fields');
+      }
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Windows 98 Login Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_social_login",
+      "label": "Show Social Login Options",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_remember_me",
+      "label": "Enable Remember Me",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

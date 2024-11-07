@@ -1,0 +1,158 @@
+{% comment %}Windows 98 Inspired Cart Page{% endcomment %}
+{% section 'win98-header' %}
+
+<div class="win98-window win98-cart-window">
+  <div class="win98-title-bar">
+    <span class="win98-title">Shopping Cart</span>
+    <div class="win98-window-controls">
+      <button class="win98-window-control" data-action="minimize">_</button>
+      <button class="win98-window-control" data-action="maximize">□</button>
+      <button class="win98-window-control" data-action="close">×</button>
+    </div>
+  </div>
+  
+  <div class="win98-cart-content">
+    {% form 'cart', cart, class: 'win98-cart-form' %}
+      <div class="win98-cart-items">
+        <div class="win98-title-bar">
+          <span class="win98-title">Cart Contents</span>
+        </div>
+        
+        {% if cart.items.size > 0 %}
+          <table class="win98-cart-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in cart.items %}
+                <tr class="win98-cart-item" data-item-id="{{ item.id }}">
+                  <td class="win98-cart-item-details">
+                    <img src="{{ item.image | img_url: 'small' }}" alt="{{ item.title }}">
+                    <span>{{ item.title }}</span>
+                    {% if item.variant.title != 'Default Title' %}
+                      <span class="win98-variant-details">{{ item.variant.title }}</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ item.price | money }}</td>
+                  <td class="win98-quantity-control">
+                    <input 
+                      type="number" 
+                      name="updates[{{ item.key }}]" 
+                      value="{{ item.quantity }}" 
+                      min="0" 
+                      class="win98-input win98-quantity-input"
+                    >
+                  </td>
+                  <td>{{ item.line_price | money }}</td>
+                  <td>
+                    <button 
+                      type="submit" 
+                      name="remove" 
+                      value="{{ item.key }}" 
+                      class="win98-button win98-remove-item"
+                    >
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <div class="win98-empty-cart">
+            <img src="{{ 'win98-empty-cart-icon.svg' | asset_url }}" alt="Empty Cart">
+            <p>Your cart is empty. Start shopping!</p>
+          </div>
+        {% endif %}
+      </div>
+      
+      <div class="win98-cart-summary">
+        <div class="win98-title-bar">
+          <span class="win98-title">Cart Summary</span>
+        </div>
+        
+        <div class="win98-cart-totals">
+          <div class="win98-subtotal">
+            <span>Subtotal:</span>
+            <span>{{ cart.total_price | money }}</span>
+          </div>
+          
+          {% if cart.total_discounts > 0 %}
+            <div class="win98-discount">
+              <span>Discount:</span>
+              <span>-{{ cart.total_discounts | money }}</span>
+            </div>
+          {% endif %}
+          
+          <div class="win98-total">
+            <strong>Total:</strong>
+            <strong>{{ cart.total_price | money }}</strong>
+          </div>
+        </div>
+        
+        <div class="win98-cart-actions">
+          <button type="submit" name="update" class="win98-button win98-update-cart">
+            Update Cart
+          </button>
+          
+          <button type="submit" name="checkout" class="win98-button win98-checkout">
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
+    {% endform %}
+  </div>
+</div>
+
+{% section 'win98-footer' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const quantityInputs = document.querySelectorAll('.win98-quantity-input');
+    
+    quantityInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        if (input.value < 0) {
+          input.value = 0;
+        }
+      });
+    });
+    
+    // Confirm cart item removal
+    const removeButtons = document.querySelectorAll('.win98-remove-item');
+    removeButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        const confirmRemove = confirm('Are you sure you want to remove this item?');
+        if (!confirmRemove) {
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Windows 98 Cart Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_shipping_estimate",
+      "label": "Show Shipping Estimate",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_field",
+      "label": "Show Discount Code Field",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

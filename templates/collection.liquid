@@ -1,0 +1,134 @@
+{% comment %}Windows 98 Inspired Collection Page{% endcomment %}
+{% section 'win98-header' %}
+
+<div class="win98-window win98-collection-window">
+  <div class="win98-title-bar">
+    <span class="win98-title">{{ collection.title }}</span>
+    <div class="win98-window-controls">
+      <button class="win98-window-control" data-action="minimize">_</button>
+      <button class="win98-window-control" data-action="maximize">□</button>
+      <button class="win98-window-control" data-action="close">×</button>
+    </div>
+  </div>
+  
+  <div class="win98-collection-content">
+    <div class="win98-explorer-sidebar">
+      <div class="win98-folder-tree">
+        {% for collection in collections %}
+          <div class="win98-folder" data-collection-handle="{{ collection.handle }}">
+            <img src="{{ 'win98-folder-icon.svg' | asset_url }}" alt="Folder">
+            <span>{{ collection.title }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="win98-collection-products">
+      <div class="win98-title-bar">
+        <span class="win98-title">{{ collection.title }} Contents</span>
+      </div>
+      
+      <div class="win98-product-grid">
+        {% paginate collection.products by 12 %}
+          {% for product in collection.products %}
+            <div class="win98-product-icon" data-product-id="{{ product.id }}">
+              <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+              <span class="win98-icon-label">{{ product.title }}</span>
+              <span class="win98-icon-price">{{ product.price | money }}</span>
+            </div>
+          {% endfor %}
+          
+          {% if paginate.pages > 1 %}
+            <div class="win98-pagination">
+              {{ paginate | default_pagination }}
+            </div>
+          {% endif %}
+        {% endpaginate %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% section 'win98-footer' %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const productIcons = document.querySelectorAll('.win98-product-icon');
+    const folderIcons = document.querySelectorAll('.win98-folder');
+    
+    // Product double-click navigation
+    productIcons.forEach(icon => {
+      icon.addEventListener('dblclick', () => {
+        const productId = icon.dataset.productId;
+        window.location.href = `/products/${productId}`;
+      });
+    });
+    
+    // Folder navigation
+    folderIcons.forEach(folder => {
+      folder.addEventListener('dblclick', () => {
+        const collectionHandle = folder.dataset.collectionHandle;
+        window.location.href = `/collections/${collectionHandle}`;
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Windows 98 Collection Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "label": "Show Collection Description",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 24,
+      "step": 4,
+      "label": "Products per Page",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "sort_by",
+      "label": "Default Sort",
+      "options": [
+        {
+          "value": "best-selling",
+          "label": "Best Selling"
+        },
+        {
+          "value": "price-ascending",
+          "label": "Price: Low to High"
+        },
+        {
+          "value": "price-descending",
+          "label": "Price: High to Low"
+        },
+        {
+          "value": "title-ascending",
+          "label": "Alphabetically, A-Z"
+        },
+        {
+          "value": "title-descending",
+          "label": "Alphabetically, Z-A"
+        },
+        {
+          "value": "created-descending",
+          "label": "Date: New to Old"
+        },
+        {
+          "value": "created-ascending",
+          "label": "Date: Old to New"
+        }
+      ],
+      "default": "best-selling"
+    }
+  ]
+}
+{% endschema %}
